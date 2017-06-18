@@ -1,3 +1,6 @@
+
+# settings
+
 insert into `settings` values
 ('site_name', 'fastgallery', 'Site Name', 'The site\'s name.', 'Meta'),
 ('site_desc', NULL, 'Site Description', 'The site\'s description.', 'Meta'),
@@ -10,7 +13,7 @@ insert into `settings` values
 ('image_view', 1, 'Image View', 'Image view with a panel to the right with image data, or no?', 'Application'),
 ('show_image_desc', 'a:2:{s:5:"title";i:1;s:4:"desc";i:1;}', 'Show Image Description', 'Show image description (No right panel view only).', 'Application'),
 ('show_image_meta', 1, 'Show Image Meta', 'Show show lens info, aperture, shutter speed, and ISO.', 'Application'),
-('max_image_size', '60%', 'Max Image Size', '', 'Application'),
+('show_store_link', 0, 'Show Store Link', 'For each photo, show them where you can buy it!', 'Application'),
 ('thumbnail_size', '100x150', 'Thumbnail Size', 'How big do you want your thumbnails to display in galleries?', 'Application'),
 ('time_zone', NULL, 'Time Zone', 'Where on this planet do you live?', 'Application'),
 ('locale', NULL, 'Locale', 'What language does your primary audience speak, where a they from?', 'Application'),
@@ -22,6 +25,16 @@ insert into `settings` values
 ('copyright', NULL, 'Copyright', 'What is copyrighted?', 'Copyright'),
 ('terms', NULL, 'Terms', 'What are your terms for using your site?', 'Terms'),
 ('privacy', NULL, 'Privacy', 'What is your privacy policy?', 'Privacy')
+;
+
+# default account
+insert into accounts values
+(null, 1, 'admin', null, '', null, null, 'S', 'A', 0, now(), now(), null)
+;
+
+# default gallery
+insert into galleries values
+(NULL, 1, 'Gallery', 'Default Gallery', '', 0, now(), now(), null)
 ;
 
 
