@@ -1,7 +1,7 @@
 
 create table `accounts` (
     `id` int(6) unsigned not null auto_increment,
-    `modified_by` int(6) unsigned NOT NULL,
+    `modified_by` int(6) unsigned not null,
     `username` varchar(32) default null,
     `email` varchar(255) default null,
     `password` text,
@@ -9,7 +9,7 @@ create table `accounts` (
     `last_name` varchar(255) default null,
     `permissions` enum('S','A','E') default null,
     `status` enum('A','S') default null,
-    `deleted` tinyint(1) unsigned DEFAULT '0',
+    `deleted` tinyint(1) unsigned default '0',
     `create_date` datetime default null,
     `modified_date` datetime default null,
     `delete_date` datetime default null,
