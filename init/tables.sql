@@ -83,6 +83,17 @@ create table `tags` (
     foreign key (`modified_by`) references `accounts` (`id`) 
 ) default charset=utf8;
 
+create table `subscribers` (
+  `id` int(10) unsigned not null auto_increment,
+  `modified_by` int(6) unsigned not null,
+  `email` varchar(255) default null,
+  `create_date` datetime default null,
+  `modified_date` datetime default null,
+  `delete_date` datetime default null,
+  primary key (`id`),
+  foreign key (`modified_by`) references `accounts` (`id`)
+) default charset=utf8;
+
 create table `settings` (
     `key` varchar(32) not null,
     `value` text,
