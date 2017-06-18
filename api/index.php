@@ -46,6 +46,12 @@ $app->get('/', function (Request $request, Response $response) {
  * admin routes
  */
 // /admin GET
+
+// /admin/setup GET
+// /admin/setup/db POST
+// /admin/setup/account PUT
+// /admin/setup/complete GET
+
 // /admin/settings GET
 // /admin/settings/{key} PUT
 
