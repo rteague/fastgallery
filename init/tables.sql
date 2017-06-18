@@ -86,6 +86,9 @@ create table `tags` (
 create table `settings` (
     `key` varchar(32) not null,
     `value` text,
+    `label` varchar(64) not null default '',
+    `description` text,
+    `category` enum('Meta', 'Proprietor', 'Application', 'Copyright', 'Terms', 'Privacy') not null,
     primary key (`key`)
 ) default charset=utf8;
 
