@@ -21,14 +21,17 @@ create table `pages` (
     `id` smallint(3) unsigned not null auto_increment,
     `modified_by` int(6) unsigned not null,
     `title` varchar(255) default null,
-    `slug` varchar(255) default null,
+    `uri` varchar(255) default null,
     `content` mediumtext,
+    `postition` int(10) unsigned default '0',
     `deleted` tinyint(1) unsigned default '0',
+    `is_published` tinyint(1) unsigned default '0',
     `publish_date` datetime default null,
     `create_date` datetime default null,
     `modified_date` datetime default null,
     `delete_date` datetime default null,
     primary key (`id`),
+    fulltext `title_content` (`title`, `content`),
     foreign key (`modified_by`) references `accounts` (`id`) 
 ) default charset=utf8;
 
@@ -42,6 +45,7 @@ create table `categories` (
     `modified_date` datetime default null,
     `delete_date` datetime default null,
     primary key (`id`),
+    fulltext `title_description` (`title`, `description`),
     foreign key (`modified_by`) references `accounts` (`id`)
 ) default charset=utf8;
 
@@ -50,7 +54,7 @@ create table `photos` (
     `modified_by` int(6) unsigned not null,
     `category_id` tinyint(2) unsigned not null,
     `title` varchar(255) default null,
-    `description` mediumtext,
+    `description` text,
     `store_link` text,
     `original_image` text default null,
     `large_image` text default null,
@@ -58,11 +62,13 @@ create table `photos` (
     `small_image` text default null,
     `thumbnail_image` text default null,
     `deleted` tinyint(1) unsigned default '0',
+    `is_published` tinyint(1) unsigned default '0',
     `publish_date` datetime default null,
     `create_date` datetime default null,
     `modified_date` datetime default null,
     `delete_date` datetime default null,
     primary key (`id`),
+    fulltext `title_description` (`title`, `description`), 
     foreign key (`modified_by`) references `accounts` (`id`),
     foreign key (`category_id`) references `categories` (`id`)
 ) default charset=utf8;
@@ -74,10 +80,13 @@ create table `galleries` (
     `description` mediumtext,
     `store_link` text,
     `deleted` tinyint(1) unsigned default '0',
+    `is_published` tinyint(1) unsigned default '0',
+    `publish_date` datetime default null,
     `create_date` datetime default null,
     `modified_date` datetime default null,
     `delete_date` datetime default null,
     primary key (`id`),
+    fulltext `title_description` (`title`, `description`),
     foreign key (`modified_by`) references `accounts` (`id`) 
 ) default charset=utf8;
 
@@ -102,10 +111,30 @@ create table `tags` (
     foreign key (`modified_by`) references `accounts` (`id`) 
 ) default charset=utf8;
 
+create table `tags_photos` (
+    `id` bigint(12) unsigned not null auto_increment,
+    `tag_id` int(10) unsigned not null,
+    `photo_id` int(10) unsigned not null,
+    primary key (`id`),
+    foreign key (`tag_id`) references `tags` (`id`),
+    foreign key (`photo_id`) references `photos` (`id`)
+) default charset=utf8;
+
+create table `tags_galleries` (
+    `id` bigint(12) unsigned not null auto_increment,
+    `tag_id` int(10) unsigned not null,
+    `gallery_id` int(10) unsigned not null,
+    primary key (`id`),
+    foreign key (`tag_id`) references `tags` (`id`),
+    foreign key (`gallery_id`) references `galleries` (`id`)
+) default charset=utf8;
+
 create table `subscribers` (
     `id` int(10) unsigned not null auto_increment,
     `modified_by` int(6) unsigned not null,
     `email` varchar(255) default null,
+    `subscribed` tinyint(1) unsigned default '0',
+    `deleted` tinyint(1) unsigned default '0',
     `create_date` datetime default null,
     `modified_date` datetime default null,
     `delete_date` datetime default null,

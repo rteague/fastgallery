@@ -1,4 +1,6 @@
 
+drop table if exists `tags_galleries`;
+drop table if exists `tags_photos`;
 drop table if exists `tags`;
 drop table if exists `settings`;
 drop table if exists `galleries_photos`;
