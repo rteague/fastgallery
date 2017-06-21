@@ -34,7 +34,7 @@ insert into accounts values
 
 # default gallery
 insert into galleries values
-(NULL, 1, 'Gallery', 'Default Gallery', '', 0, 1, now(), now(), now(), null)
+(NULL, 1, 'Gallery', 'Default Gallery', '', 1, 0, 1, now(), now(), now(), null)
 ;
 
 
