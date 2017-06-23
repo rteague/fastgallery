@@ -7,14 +7,36 @@
  *
  */
 
+use \Doctrine\DBAL\DriverManager;
+
 class BaseModel
 {
+    const DEFAULT_DB_PREFIX = 'fg_';
     const SOFT_DELETE = 0;
     const HARD_DELETE = 1;
-    
+
+    protected $db;
+
     public function __construct()
     {
-        //
+        // connect to the database
+        $dbconfig = new \Doctrine\DBAL\Configuration();
+        $mysql_url_str = sprintf(
+            'mysql://%s:%s@%s/%s',
+            DB_USER,
+            DB_PASS,
+            DB_HOST,
+            DB_DATABASE
+        );
+        $this->db = \Doctrine\DBAL\DriverManager::getConnection(
+            ['url' => $mysql_url_str],
+            $dbconfig
+        );
+    }
+
+    public function __destruct()
+    {
+        $this->db->close();
     }
     
     public function __toString()

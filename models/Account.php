@@ -8,6 +8,19 @@
  */
 
 class Account extends BaseModel {
+    public $id;
+    public $modified_by;
+    public $username;
+    public $password;
+    public $first_name;
+    public $last_name;
+    public $permissions;
+    public $status;
+    public $deleted;
+    public $create_date;
+    public $modified_date;
+    public $delete_date;
+    
     public static function upsert($input, $id = null)
     {
         $account  = null;
@@ -16,7 +29,7 @@ class Account extends BaseModel {
         } else {
             $account = Account::findById($id);
         }
-
+        
         $account->save();
         
         return $account;

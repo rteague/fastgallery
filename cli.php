@@ -7,6 +7,10 @@
  *
  */
 
+require 'vendor/autoload.php';
+
+require 'dbconfig.php';
+
 // models
 spl_autoload_register(function ($classname) {
     require ('models/' . $classname . '.php');
@@ -18,6 +22,5 @@ spl_autoload_register(function ($classname) {
 });
 
 $a = new Account;
-
-print $a->delete(Account::HARD_DELETE);
+$a->save();
 
