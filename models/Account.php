@@ -21,6 +21,12 @@ class Account extends BaseModel {
     public $modified_date;
     public $delete_date;
     
+    public function save()
+    {
+        //parent::save();
+        var_dump($this->db);
+    }
+    
     public static function upsert($input, $id = null)
     {
         $account  = null;

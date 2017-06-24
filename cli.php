@@ -23,4 +23,5 @@ spl_autoload_register(function ($classname) {
 
 $a = new Account;
 $a->save();
+//echo $a . PHP_EOL;
 
