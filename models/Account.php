@@ -8,6 +8,9 @@
  */
 
 class Account extends BaseModel {
+    protected $table_name = 'accounts';
+    protected $id_field = 'id';
+
     public $id;
     public $modified_by;
     public $username;
@@ -20,12 +23,6 @@ class Account extends BaseModel {
     public $create_date;
     public $modified_date;
     public $delete_date;
-    
-    public function save()
-    {
-        //parent::save();
-        var_dump($this->db);
-    }
     
     public static function upsert($input, $id = null)
     {
