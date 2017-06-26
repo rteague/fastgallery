@@ -19,13 +19,22 @@ class BaseModel
 
     // reserved properties for the base class
     protected $reserved_properties = [
+        'db',
+        'id_field',
+        'onSaveID',
+        'queryStr',
         'reserved_properties',
         'table_name',
-        'id_field',
-        'db',
+        'transactionProperties',
     ];
 
     protected $db;
+    
+    protected $onSaveID;
+
+    protected $queryStr;
+
+    protected $transactionProperties;
 
     public function __construct()
     {
@@ -34,7 +43,7 @@ class BaseModel
         $mysql_url_str = sprintf(
             'mysql://%s:%s@%s/%s',
             DB_USER,
-            DB_PASS,
+            DB_PASSWORD,
             DB_HOST,
             DB_DATABASE
         );
@@ -86,63 +95,61 @@ class BaseModel
     {
         return true;
     }
-    
-    public function save($id = null)
+
+    public function buildQueryStr()
     {
-        if (!$this->beforeSave()) {
-            throw new Exception('Before save failed' . PHP_EOL);
-        }
-        if (isset($id)) {
+        if (isset($this->onSaveID)) {
             // $id passed, so it's an update
             $sql = sprintf("update %s set ", $this->table_name);
         } else {
             // $id not passed, so it's an insert
             $sql = sprintf("insert into %s set ", $this->table_name);
         }
-        $type;
         $properties = get_object_vars($this);
-        $sql_vals = [];
-        /*
-        foreach ($properties as $key => $val) {
-            $type = gettype($val);
-            if (
-                preg_match('/object|resource|unknown *type/i', $type)
-                || in_array($key, $this->reserved_properties)
-                || ($key == $this->id_field)
-            ) {
-                continue;
-            }
-            //
-        }
-        */
-        $properties = array_filter($properties, function($key, $val) {
-            if (
+        $this->transactionProperties = array_filter($properties, function($val, $key) {
+           if (
                 preg_match('/object|resource|unknown *type/i', gettype($val))
                 || in_array($key, $this->reserved_properties)
                 || $key == $this->id_field
             ) {
-                return true;
+                return false;
             }
-        });
-        die(var_dump($properties).PHP_EOL);
-        // fields to update
-        if (self::NULL_PROPERTIES && is_null($val)) {
-            $sql = sprintf("%s%s = null, ", $sql, $key, $val);
-        } else {
-            $sql = sprintf("%s%s = :%s, ", $sql, $key, $key);
+            return true;
+        }, ARRAY_FILTER_USE_BOTH);
+        foreach ($this->transactionProperties as $key => $val) {
+            // fields to update
+            if (self::NULL_PROPERTIES && is_null($val)) {
+                $sql = sprintf("%s%s = null, ", $sql, $key, $val);
+            } else {
+                $sql = sprintf("%s%s = :%s, ", $sql, $key, $key);
+            }
         }
-        //echo sprintf("%s type:%s", $key, $type) . PHP_EOL;
         $sql = trim($sql, ', ');
-        
-        if (isset($id)) {
-            $sql = sprintf("%s where %s = '%s'", $sql, $this->id_field, $id);
+        if (isset($this->onSaveID)) {
+            $sql = sprintf("%s where %s = '%s'", $sql, $this->id_field, $this->onSaveID);
         }
-        echo $sql . PHP_EOL;
+        $this->queryStr = $sql;
+        return $this->queryStr;
+    }
+
+    public function save($id = null)
+    {
+        $this->onSaveID = $id;
+
+        $this->buildQueryStr();
+        
+        if (!$this->beforeSave()) {
+            throw new Exception('Before save failed' . PHP_EOL);
+        }
+        
+        echo $this->queryStr . PHP_EOL;
         
         // now prepare run the query
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue('%s', $val);
-        $stmt->execute();
+        $stmt = $this->db->prepare($this->queryStr);
+        foreach ($this->transactionProperties as $key => $val) {
+            $stmt->bindValue(sprintf(':%s', $key), $val);
+        }
+        //$stmt->execute();
         
         if (!$this->afterSave()) {
             throw new Exception('After save failed' . PHP_EOL);
@@ -158,7 +165,7 @@ class BaseModel
             $this->deleted = 1;
             $this->modified_date = $now;
             $this->delete_date = $now;
-            $this->save();
+            $this->save($this->{$this->id_field});
             return $this;
         } elseif ($type == self::HARD_DELETE) {
             // run delete from on the database
