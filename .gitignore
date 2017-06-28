@@ -4,4 +4,4 @@ composer.lock
 *.swp
 *.log
 tmp/*
-
+dbconfig.php
