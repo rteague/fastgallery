@@ -22,6 +22,7 @@ spl_autoload_register(function ($classname) {
 });
 
 $a = new Account;
+$a->modified_by = 1;
 $a->username = 'rteague';
 $a->save();
 //echo $a . PHP_EOL;

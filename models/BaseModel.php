@@ -98,7 +98,7 @@ class BaseModel
 
     public function buildQueryStr()
     {
-        if (isset($this->onSaveID)) {
+        if (isset($this->{$this->id_field})) {
             // $id passed, so it's an update
             $sql = sprintf("update %s set ", $this->table_name);
         } else {
@@ -132,10 +132,8 @@ class BaseModel
         return $this->queryStr;
     }
 
-    public function save($id = null)
+    public function save()
     {
-        $this->onSaveID = $id;
-
         $this->buildQueryStr();
         
         if (!$this->beforeSave()) {
@@ -149,7 +147,7 @@ class BaseModel
         foreach ($this->transactionProperties as $key => $val) {
             $stmt->bindValue(sprintf(':%s', $key), $val);
         }
-        //$stmt->execute();
+        $stmt->execute();
         
         if (!$this->afterSave()) {
             throw new Exception('After save failed' . PHP_EOL);
