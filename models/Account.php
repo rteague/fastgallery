@@ -26,7 +26,7 @@ class Account extends BaseModel {
     
     public static function upsert($input, $id = null)
     {
-        $account  = null;
+        $account = null;
         if (is_null($id)) {
             $account = new Account;
         } else {

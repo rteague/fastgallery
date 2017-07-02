@@ -35,6 +35,8 @@ class BaseModel
     protected $queryStr;
 
     protected $transactionProperties;
+    
+    protected $table_name;
 
     public function __construct()
     {
@@ -77,6 +79,18 @@ class BaseModel
     public function db()
     {
         return $this->db;
+    }
+
+    protected function getTableColumns()
+    {
+        if (empty($this->table_name)) {
+            return null;
+        }
+        $columns = [];
+        $sql = sprintf("show columns from %s", $this->table_name);
+        $stmt = $this->db->executeQuery($sql);
+        $columns = $stmt->fetchAll();
+        return $columns;
     }
     
     public function fill($input)
